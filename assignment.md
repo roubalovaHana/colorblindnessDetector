@@ -1,6 +1,6 @@
 # Automatic Color-Blindness Detection in Data Visualizations
 ## Objective:
-This project aims to create an application with a graphical interface that will determine if a graph image is color-blind friendly or not. The program will analyze the colors of a given image and check if they are distinguishable for people with different types of color blindness.
+This project aims to create an application with a graphical interface that will determine if a graph image is colorblind-friendly or not. The program will analyze the colors of a given image and check if they are distinguishable for people with different types of color blindness.
 
 ## Operating System:
 The application will be developed for **Windows**.
