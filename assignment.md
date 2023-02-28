@@ -19,5 +19,5 @@ The implementation will most likely utilize the following libraries:
 - **Sklearn**/**Tensorflow**/**PyTorch** for machine learning
 - **Pandas** for data analysis
 - **Numpy** for computations and processing
-- **PyQt5**/**PySide** for the graphical interface
+- **Kivy** for the graphical interface
 - **Colorblind** for colorblindness simulation
