@@ -7,5 +7,4 @@ def convert_to_jpg(image_file_path):
     cv2.imwrite(new_image_path, image)
 
 
-convert_to_jpg("../TestFiles/png_image.png")
-
+# convert_to_jpg("../TestFiles/png_image.png")
