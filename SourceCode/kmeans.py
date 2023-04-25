@@ -1,22 +1,31 @@
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 import numpy as np
+from sklearn.metrics import silhouette_score
 
 
-def group_colors(image, plot=False):
+# finds optimal k for KMeans using Silhouette method
+def find_optimal_k(colors):
+    silhouette_scores = []
+    for k in range(2, 10):
+        kmeans = KMeans(n_clusters=k, random_state=0).fit(colors)
+        score = silhouette_score(colors, kmeans.labels_, sample_size=1000)
+        silhouette_scores.append(score)
+
+    return silhouette_scores.index(max(silhouette_scores)) + 2
+
+
+def group_colors(image):
     # get rid of duplicate colors
     pixels = list(set(image.convert('RGB').getdata()))
     colors = np.array(pixels)
-
-    kmeans = KMeans(n_clusters=20, random_state=0).fit(colors)
+    best_k = find_optimal_k(colors)
+    print("best_k: ", best_k)
+    kmeans = KMeans(n_clusters=best_k, random_state=0).fit(colors)
     centers = np.array(kmeans.cluster_centers_.astype("uint8"))
-
-    # visualize
-    if plot:
-        for center in centers:
-            # to visualize, colors must have values between 0 and 1
-            center = center / 255
-            # convert to tuple so that plt sees it as one color
-            plt.imshow([[tuple(center)]])
-            plt.show()
     return centers
+
+
+def visualize_colors(colors):
+    plt.scatter(np.arange(colors.shape[0]), np.zeros(colors.shape[0]), color=colors/255, s=100)
+    plt.show()
