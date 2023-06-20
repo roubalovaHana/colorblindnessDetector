@@ -1,0 +1,96 @@
+<DesignControl>
+
+    MDBoxLayout:
+        orientation: 'vertical'
+        spacing: 30
+        padding: 20
+
+        MDBoxLayout: # image + checkboxes
+            orientation: 'horizontal'
+            spacing: 10
+
+            Image:
+                id: cover_img
+                text: 'No file selected'
+                source: ""
+
+            MDBoxLayout:
+                pos_hint: {"center_y": .5, "center_x": 1}
+                size_hint: .9, .5
+                orientation: 'vertical'
+                spacing: 30
+                # checkboxes
+                BoxLayout:
+                    orientation: "horizontal"
+                    MDCheckbox:
+                        id: prot_check
+                        size_hint: 1, 1
+                    MDLabel:
+                        text: "Propanotopia"
+                    MDLabel:
+                        id: prop_issue_label
+                        text: "Issues found!"
+                        halign: "center"
+                        theme_text_color: "Error"
+                        opacity: 0
+
+                MDBoxLayout:
+                    orientation: "horizontal"
+                    MDCheckbox:
+                        id: deut_check
+                        size_hint: 1, 1
+                    MDLabel:
+                        text: "Deutranotopia"
+                    MDLabel:
+                        id: deut_issue_label
+                        text: "Issues found!"
+                        halign: "center"
+                        theme_text_color: "Error"
+                        opacity: 0
+
+                MDBoxLayout:
+                    orientation: "horizontal"
+                    MDCheckbox:
+                        id: trit_check
+                        size_hint: 1, 1
+                    MDLabel:
+                        text: "Tritanotopia"
+                    MDLabel:
+                        id: trit_issue_label
+                        text: "Issues found!"
+                        halign: "center"
+                        theme_text_color: "Error"
+                        opacity: 0
+
+        MDBoxLayout:  # buttons
+            spacing: 10
+            orientation: 'horizontal'
+            size_hint: 1, .2
+
+            MDRaisedButton:
+                id: load_btn
+                text: "LOAD"
+                size_hint: 1, 1
+                on_press: root.file_manager_open()
+            MDRaisedButton:
+                id: prev_btn
+                text: "PREV"
+                size_hint: 1, 1
+                on_press: root.change_image(-1)
+            MDRaisedButton:
+                id: next_btn
+                text: "NEXT"
+                size_hint: 1, 1
+                on_press: root.change_image(1)
+            MDRaisedButton:
+                id: execute_btn
+                text: "CHECK"
+                size_hint: 1, 1
+                on_press: root.show_process_button(self)
+                on_release: root.start_eval(self)
+            MDRaisedButton:
+                id: download_btn
+                text: "DOWNLOAD"
+                size_hint: 1, 1
+                on_press: root.show_download_button(self)
+                on_release: root.download_report(self)
