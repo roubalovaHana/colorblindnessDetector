@@ -1,3 +1,6 @@
+import base64
+import io
+
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 import numpy as np
@@ -27,5 +30,8 @@ def group_colors(image):
 
 
 def visualize_colors(colors):
-    plt.scatter(np.arange(colors.shape[0]), np.zeros(colors.shape[0]), color=colors/255, s=100)
-    plt.show()
+    plt.scatter(np.arange(colors.shape[0]), np.zeros(colors.shape[0]), color=colors / 255, s=100)
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    return base64.b64encode(buf.getvalue()).decode()

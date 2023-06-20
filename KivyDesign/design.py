@@ -55,19 +55,34 @@ class DesignControl(BoxLayout):
             self.show_image()
 
     def start_eval(self, bt):
-        pass
+        if 0 <= self.image_index < len(self.image_stack):
+            path = self.image_stack[self.image_index]
+            self.logic_control.find_issues(path, self.ids.prot_check.active, self.ids.deut_check.active, self.ids.trit_check.active)
+            for label, color_deficiency in zip(self.issue_labels, self.logic_control.report_result_list):
+                if color_deficiency.found:
+                    label.opacity = 1
+        bt.text = "CHECK"
+        bt.disabled = False
 
     def show_process_button(self, bt):
-        pass
+        self.reset_issue_labels()
+        bt.text = "PROCESSING"
+        bt.disabled = True
 
     def show_download_button(self, bt):
-        pass
+        if any(issues.found for issues in self.logic_control.report_result_list):
+            bt.text = "PROCESSING"
+            bt.disabled = True
 
     def download_report(self, bt):
-        pass
+        if bt.disabled:
+            self.logic_control.generate_report(self.image_stack[self.image_index])
+            bt.text = "DOWNLOAD"
+            bt.disabled = False
 
     def reset_issue_labels(self):
-        pass
+        for label in self.issue_labels:
+            label.opacity = 0
 
 
 class Design(MDApp):
