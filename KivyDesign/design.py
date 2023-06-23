@@ -26,7 +26,7 @@ class DesignControl(BoxLayout):
 
     def file_manager_open(self) -> None:
         self.manager_open = True
-        self.file_manager.show(os.path.expanduser(os.getcwd()))
+        self.file_manager.show(os.path.dirname(os.getcwd()))
 
     def select_path(self, path: str) -> None:
         self.directory = pathlib.Path(path)
@@ -41,13 +41,17 @@ class DesignControl(BoxLayout):
         self.exit_manager()
         self.show_image()
 
-    def exit_manager(self) -> None:
+    def exit_manager(self, *args: Any) -> None:
         self.manager_open = False
         self.file_manager.close()
 
     def show_image(self):
-        self.reset_issue_labels()
-        self.ids.cover_img.source = self.image_stack[self.image_index]
+        if self.image_stack:
+            self.reset_issue_labels()
+            img_path = self.image_stack[self.image_index]
+            self.ids.cover_img.source = img_path
+            self.ids.img_name_label.text = os.path.basename(img_path)
+            self.ids.img_name_label.opacity = 1
 
     def change_image(self, direction):
         if 0 <= self.image_index + direction < len(self.image_stack):

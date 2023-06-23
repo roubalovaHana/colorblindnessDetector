@@ -2,7 +2,7 @@
 
     MDBoxLayout:
         orientation: 'vertical'
-        spacing: 30
+        spacing: 10
         padding: 20
 
         MDBoxLayout: # image + checkboxes
@@ -25,6 +25,7 @@
                     MDCheckbox:
                         id: prot_check
                         size_hint: 1, 1
+                        active: True
                     MDLabel:
                         text: "Propanotopia"
                     MDLabel:
@@ -39,6 +40,7 @@
                     MDCheckbox:
                         id: deut_check
                         size_hint: 1, 1
+                        active: True
                     MDLabel:
                         text: "Deutranotopia"
                     MDLabel:
@@ -53,6 +55,7 @@
                     MDCheckbox:
                         id: trit_check
                         size_hint: 1, 1
+                        active: True
                     MDLabel:
                         text: "Tritanotopia"
                     MDLabel:
@@ -61,6 +64,11 @@
                         halign: "center"
                         theme_text_color: "Error"
                         opacity: 0
+        MDLabel:
+            id: img_name_label
+            text: "image name"
+            size_hint: 1, .1
+            opacity: 0
 
         MDBoxLayout:  # buttons
             spacing: 10
