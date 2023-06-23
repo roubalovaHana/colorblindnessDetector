@@ -1,5 +1,6 @@
 import os.path
 from pathlib import Path
+import numpy as np
 import image_format_converter
 import kmeans
 import deltaE_distance_calculator
@@ -12,12 +13,24 @@ from report_result_object import ReportResultObject
 class LogicControl:
     report_result_list = []
 
+    def group_colors(self, colors) -> np.array:
+        if len(colors) > 0:
+            # distances = cdist(colors[0:1], colors, metric=deltaE_distance_calculator.pairwise_deltaE_distance)[0]
+            distances = np.array(list(np.linalg.norm(colors[0] - color) for color in colors))
+            group = colors[distances <= 135]
+            rest = colors[distances > 135]
+            return [group] + self.group_colors(rest)
+        return []
+
     def find_issues(self, image_file_path, prot_check, deut_check, trit_check):
         image_format_converter.convert_to_jpg(image_file_path)
         graph = Image.open(image_file_path)
-        grouped_colors = kmeans.group_colors(graph)
-        kmeans.visualize_colors(grouped_colors)
-        distance_matrix = deltaE_distance_calculator.count_deltaE_distance(grouped_colors)
+        # grouped_colors = kmeans.group_colors(graph)
+        colors = np.array(list(set(graph.convert('RGB').getdata())))
+        grouped_colors = self.group_colors(colors)
+        grouped_colors = [np.mean(group, axis=0) for group in grouped_colors]
+        print("groups: ", len(grouped_colors))
+        distance_matrix = deltaE_distance_calculator.count_deltaE_distance(np.array(grouped_colors))
         prot_obj = ReportResultObject("Protanopia")
         deut_obj = ReportResultObject("Deuteranopia")
         trit_obj = ReportResultObject("Tritanopia")
@@ -52,5 +65,5 @@ class LogicControl:
         header = "Color-Blind Detector report for " + img_name
         pdf_generator.generate(path, header, path_to_img, self.report_result_list)
 
-# find_issues("../TestFiles/colorblind_unfriendly.jpg")
+# LogicControl().find_issues("../TestFiles/prot_deut (2).jpg", True, True, True)
 # find_issues(r"C:\Users\Mu\Documents\Škola\Matfyz\Bakalářka\roubalova\TestFiles\colorblind_unfriendly.jpg")
