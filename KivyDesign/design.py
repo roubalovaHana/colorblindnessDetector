@@ -22,7 +22,7 @@ class DesignControl(BoxLayout):
         self.image_stack = []
         self.image_index = 0
         self.issue_labels = [self.ids.prop_issue_label, self.ids.deut_issue_label, self.ids.trit_issue_label]
-        self.logic_control = facade.LogicControl()
+        self.logic_control = facade.Facade()
 
     def file_manager_open(self) -> None:
         self.manager_open = True
@@ -31,7 +31,6 @@ class DesignControl(BoxLayout):
     def select_path(self, path: str) -> None:
         self.directory = pathlib.Path(path)
         self.image_stack = []
-        print(path)
         if os.path.isdir(self.directory):
             for i in os.listdir(self.directory):
                 if pathlib.Path(i).suffix in self.image_extensions:

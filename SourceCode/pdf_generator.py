@@ -20,7 +20,7 @@ def html_2_pdf(html_string: str, file_name: str):
 
 # https://jinja.palletsprojects.com/en/3.1.x/templates/
 # https://xhtml2pdf.readthedocs.io/en/latest/usage.html
-def generate(path, header, img_path, template_var_obj):
+def generate(pdf_path, header, img_path, template_var_obj):
     jinja_env = Environment(
         loader=FileSystemLoader('./'),
         autoescape=select_autoescape()
@@ -28,4 +28,4 @@ def generate(path, header, img_path, template_var_obj):
     template = jinja_env.get_template('report_template.j2')
     html_text = template.render(header=header, img_path=img_path, issue_obj=template_var_obj)
     pisa.showLogging()
-    html_2_pdf(html_text, path)
+    html_2_pdf(html_text, pdf_path)
