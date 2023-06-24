@@ -1,17 +1,11 @@
-from abc import abstractmethod, ABC
 import numpy as np
+from scipy.spatial.distance import cdist
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
+from SourceCode import deltaE_distance_calculator
 
 
-class ColorGroupingStrategy(ABC):
-
-    @abstractmethod
-    def group_colors(self, colors: np.array):
-        pass
-
-
-class KMeansColorGroupingStrategy(ColorGroupingStrategy):
+class KMeansColorGroupingStrategy:
 
     # finds optimal k for KMeans using Silhouette method
     def _find_optimal_k(self, colors):
@@ -31,18 +25,32 @@ class KMeansColorGroupingStrategy(ColorGroupingStrategy):
         return centers
 
 
-class EuclideanDistColorGroupingStrategy(ColorGroupingStrategy):
+class EuclideanDistColorGroupingStrategy:
     def _group_colors(self, colors: np.array) -> np.array:
         if len(colors) > 0:
-            # distances = cdist(colors[0:1], colors, metric=deltaE_distance_calculator.pairwise_deltaE_distance)[0]
             distances = np.array(list(np.linalg.norm(colors[0] - color) for color in colors))
-            group = colors[distances <= 135]
-            rest = colors[distances > 135]
+            group = colors[distances <= 150]
+            rest = colors[distances > 150]
             return [group] + self._group_colors(rest)
         return []
 
     def group_colors(self, colors: np.array) -> np.array:
         grouped_colors = self._group_colors(colors)
         print("group_count: ", len(grouped_colors))
-        return [np.mean(group, axis=0) for group in grouped_colors]
+        return [np.mean(group, axis=0) for group in grouped_colors], None   # TODO:
+
+
+class DeltaEDistColorGroupingStrategy:
+    def _group_colors(self, colors: np.array) -> np.array:
+        if len(colors) > 0:
+            distances = cdist(colors[0:1], colors, metric=deltaE_distance_calculator.pairwise_deltaE_distance)[0]
+            group = colors[distances <= 35]
+            rest = colors[distances > 35]
+            return [group] + self._group_colors(rest)
+        return []
+
+    def group_colors(self, colors: np.array) -> np.array:
+        grouped_colors = self._group_colors(colors)
+        print("group_count: ", len(grouped_colors))
+        return [np.mean(group, axis=0) for group in grouped_colors], None   # TODO:
 
