@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 import numpy as np
 from SourceCode.color_grouping_algs import KMeansColorGroupingStrategy, EuclideanDistColorGroupingStrategy, \
     DeltaEDistColorGroupingStrategy
-from SourceCode.detection_algs import DeltaDistanceDetection
 from SourceCode.report_result_object import ReportResultObject
+from SourceCode.detection_algs import PercentageDetection, DeltaDistanceDetection
 
 
 class ColorBlindnessDetectionStrategy(ABC):
@@ -33,9 +33,9 @@ class DeltaEDistDeltaDistanceDetectionStrategy(ColorBlindnessDetectionStrategy):
 
 class EuclidianDistPercentageDetectionStrategy(ColorBlindnessDetectionStrategy):
     def detect_color_blindness(self, colors: np.array, prot: bool, deut: bool, trit: bool, img: np.array) -> [ReportResultObject]:
-        grouped_colors, percentages = EuclideanDistColorGroupingStrategy().group_colors(colors)
+        return PercentageDetection().detect(colors, EuclideanDistColorGroupingStrategy(), prot, deut, trit, img)
 
 
 class DeltaEDistPercentageDetectionStrategy(ColorBlindnessDetectionStrategy):
     def detect_color_blindness(self, colors: np.array, prot: bool, deut: bool, trit: bool, img: np.array) -> [ReportResultObject]:
-        grouped_colors, percentages = DeltaEDistColorGroupingStrategy().group_colors(colors)
+        return PercentageDetection().detect(colors, DeltaEDistColorGroupingStrategy(), prot, deut, trit, img)
