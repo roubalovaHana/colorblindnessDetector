@@ -38,7 +38,8 @@ class EuclideanDistColorGroupingStrategy(ColorGroupingStrategy):
             distances = np.array(list(np.linalg.norm(colors[0] - color) for color in colors))
             group = colors[distances <= threshold]
             rest = colors[distances > threshold]
-            return [group] + self._group_colors(rest, threshold)
+            rest_result = self._group_colors(rest, threshold)
+            return [group] + rest_result
         return []
 
     def group_colors(self, colors: np.array, threshold) -> np.array:

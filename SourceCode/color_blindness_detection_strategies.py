@@ -3,7 +3,7 @@ import numpy as np
 from SourceCode.color_grouping_algs import KMeansColorGroupingStrategy, EuclideanDistColorGroupingStrategy, \
     DeltaEDistColorGroupingStrategy
 from SourceCode.report_result_object import ReportResultObject
-from SourceCode.detection_algs import PercentageDetection, DeltaDistanceDetection
+from SourceCode.detection_algs import DeltaDistanceDetection
 
 
 class ColorBlindnessDetectionStrategy(ABC):
@@ -15,27 +15,17 @@ class ColorBlindnessDetectionStrategy(ABC):
 
 class KMeansDeltaDistanceDetectionStrategy(ColorBlindnessDetectionStrategy):
     def detect_color_blindness(self, colors: np.array, prot: bool, deut: bool, trit: bool, img: np.array) -> [ReportResultObject]:
-        grouped_colors = KMeansColorGroupingStrategy().group_colors(colors)
+        grouped_colors = KMeansColorGroupingStrategy().group_colors(colors, 0)
         return DeltaDistanceDetection().detect(grouped_colors, prot, deut, trit, img)
 
 
 class EuclidianDistDeltaDistanceDetectionStrategy(ColorBlindnessDetectionStrategy):
     def detect_color_blindness(self, colors: np.array, prot: bool, deut: bool, trit: bool, img: np.array) -> [ReportResultObject]:
-        grouped_colors, _ = EuclideanDistColorGroupingStrategy().group_colors(colors)
+        grouped_colors = EuclideanDistColorGroupingStrategy().group_colors(colors, 150)
         return DeltaDistanceDetection().detect(grouped_colors, prot, deut, trit, img)
 
 
 class DeltaEDistDeltaDistanceDetectionStrategy(ColorBlindnessDetectionStrategy):
     def detect_color_blindness(self, colors: np.array, prot: bool, deut: bool, trit: bool, img: np.array) -> [ReportResultObject]:
-        grouped_colors, _ = DeltaEDistColorGroupingStrategy().group_colors(colors)
+        grouped_colors = DeltaEDistColorGroupingStrategy().group_colors(colors, 40)
         return DeltaDistanceDetection().detect(grouped_colors, prot, deut, trit, img)
-
-
-class EuclidianDistPercentageDetectionStrategy(ColorBlindnessDetectionStrategy):
-    def detect_color_blindness(self, colors: np.array, prot: bool, deut: bool, trit: bool, img: np.array) -> [ReportResultObject]:
-        return PercentageDetection().detect(colors, EuclideanDistColorGroupingStrategy(), prot, deut, trit, img)
-
-
-class DeltaEDistPercentageDetectionStrategy(ColorBlindnessDetectionStrategy):
-    def detect_color_blindness(self, colors: np.array, prot: bool, deut: bool, trit: bool, img: np.array) -> [ReportResultObject]:
-        return PercentageDetection().detect(colors, DeltaEDistColorGroupingStrategy(), prot, deut, trit, img)

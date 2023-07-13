@@ -35,26 +35,3 @@ class DeltaDistanceDetection:
         if trit_check:
             trit_obj.found, trit_obj.simulated = simulate('tritanopia')
         return [prot_obj, deut_obj, trit_obj]
-
-
-class PercentageDetection:
-    def detect(self, colors, grouping_strategy, prot, deut, trit, img: np.array):
-        def simulate(cb_type):
-            _, percentages = grouping_strategy.group_colors(colors)
-            simulated_colors = colorblind.simulate_colorblindness([colors], colorblind_type=cb_type)[0]
-            _, simulated_percentages = grouping_strategy.group_colors(simulated_colors)
-            sim_img = colorblind.simulate_colorblindness(img, colorblind_type=cb_type)
-            return True, array_to_img(sim_img)
-
-        prot_obj = ReportResultObject("Protanopia")
-        deut_obj = ReportResultObject("Deuteranopia")
-        trit_obj = ReportResultObject("Tritanopia")
-        if prot:
-            prot_obj.found, prot_obj.simulated = simulate('protanopia')
-        if deut:
-            deut_obj.found, deut_obj.simulated = simulate('deuteranopia')
-        if trit:
-            trit_obj.found, trit_obj.simulated = simulate('tritanopia')
-        return [prot_obj, deut_obj, trit_obj]
-
-

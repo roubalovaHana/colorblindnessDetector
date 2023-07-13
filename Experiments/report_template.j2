@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+    font: normal 1em/1 sans-serif;
+    }
+  </style>
+  <title>Browser</title>
+</head>
+
+<body>
+  <h1>{{ header | title }}</h1>
+    <img src="{{ img_path }}" alt={{ img_path }} width="120" height="90" />
+  {% for issue in issue_obj %}
+      {% if issue.found %}
+          <h2>{{ issue.title | title }} issues found!</h2>
+          <p>{{ issue.title | title }} simulated on extracted colors:</p>
+          <img src="data:image/png;base64,{{ issue.simulated }}" alt="Plot">
+      {% endif %}
+  {% endfor %}
+</body>

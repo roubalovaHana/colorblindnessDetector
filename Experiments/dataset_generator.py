@@ -3,11 +3,16 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-from random import choice
 import math
-import matplotlib.colors as mcolors
+from random import choice
+from PIL import Image
+from colorblind import colorblind
+from SourceCode import pdf_generator
+from SourceCode.detection_algs import array_to_img
+from SourceCode.report_result_object import ReportResultObject
 
 
+# Following method adapted from: https://github.com/ddecatur/VizExtract/blob/main/create_graph.py
 def genData(data_type):
     # determine variables
     if data_type == 'line':
@@ -23,8 +28,8 @@ def genData(data_type):
         sign = [-1, 1]
         m = choice(sign) * np.random.random()  # determine slope
         # b = choice(sign) * randint(0,50) * random() # determine intercept
-        delta = np.random.uniform(-15, 15, size=(50,))
-        X1 = np.arange(50)
+        delta = np.random.uniform(-15, 15, size=(30,))
+        X1 = np.arange(30)
         X2 = (m * X1) + delta
 
         # adjust intercept to make bar graph not cross y axis
@@ -48,19 +53,15 @@ def genData(data_type):
     return X1, X2
 
 
-def generate_grouping_dataset():
-    # Create the dataset
-    dataset = pd.DataFrame(columns=['image_filename', 'graph_type', 'color_count', 'colors'])
-
-    os.makedirs('GroupingDataset', exist_ok=True)
+def generate_graph_images(target_dir):
+    os.makedirs(target_dir, exist_ok=True)
     colors = ['red', 'forestgreen', 'deepskyblue', 'yellow', 'darkorange']
     graph_types = ['scatter', 'line', 'bar']
-    color_nums = [2, 3, 4, 5]
+    color_nums = [1, 2, 3]
     for ii in range(50):
         color_num = random.choice(color_nums)
         graph_type = random.choice(graph_types)
-        color_choices = random.sample([item for item in list(mcolors.CSS4_COLORS) if item not in colors], k=color_num-2)
-        color_choices.extend(random.sample(colors, k=2))
+        color_choices = random.sample(colors, k=color_num)
         for i in range(0, color_num):
             x, y = genData(graph_type)
             if graph_type == 'scatter':
@@ -68,29 +69,47 @@ def generate_grouping_dataset():
             elif graph_type == 'line':
                 plt.plot(x, y, color=color_choices[i])
             elif graph_type == 'bar':
-                width = 0.5
+                width = 0.3
                 plt.bar(x + np.random.uniform(-width, width), y, width, color=color_choices[i])
 
         plt.xlabel('X1')
         plt.ylabel('X2')
         plt.title(f"graph_{graph_type}_{color_num}_{ii}")
-        img_name = f"GroupingDataset/graph_prot_{graph_type}_{color_num}_{ii}.jpg"
-        dataset = dataset.append({'graph_type': graph_type, 'color_count': color_num, 'image_filename': img_name,
-                                  'colors': color_choices}, ignore_index=True)
+        img_name = f"{target_dir}/graph_prot_{graph_type}_{color_num}_{ii}.jpg"
+
         plt.savefig(img_name)
         plt.close()
-    # Save dataset as CSV
-    dataset.to_csv('grouping_dataset.csv', sep='\t', index=False)
 
 
-generate_grouping_dataset()
-# from scipy.spatial import distance
-# colors = [(255,0,0),(0,255,0),(0,0,255),(0,255,255),(255,0,255),(255,255,0),(0,0,0),(255,255,255),(130,130,130)]
-# distances = []
-# for i in range(len(colors)):
-#     dist = []
-#     for j in range(i+1, len(colors)):
-#         dist.append(distance.euclidean(colors[i], colors[j]))
-#     distances.append(dist)
-# for dist_row in distances:
-#     print(dist_row)
+def generate_dataset(dataset_name, image_source_dir):
+    dataset = pd.DataFrame(columns=['image_filename', 'graph_type', 'color_count', 'triggers'])
+    for filename in os.listdir(f"{image_source_dir}/"):
+        image_info = filename.split("_")
+        dataset = dataset.append({'graph_type': image_info[2], 'color_count': image_info[3],
+                                  'image_filename': f"{image_source_dir}/{filename}", 'triggers': []
+                                  }, ignore_index=True)
+    dataset.to_csv(dataset_name, sep='\t', index=False)
+
+
+def simulate_colorblindness(source_dir):
+    i = 0
+    for filename in os.listdir(f"{source_dir}/"):
+        graph = Image.open(f"{source_dir}/{filename}")
+        img = np.array(graph)
+        prot_obj = ReportResultObject("Protanopia")
+        deut_obj = ReportResultObject("Deuteranopia")
+        trit_obj = ReportResultObject("Tritanopia")
+        prot_obj.found, prot_obj.simulated = True, array_to_img(
+            colorblind.simulate_colorblindness(img, colorblind_type='protanopia'))
+        deut_obj.found, deut_obj.simulated = True, array_to_img(
+            colorblind.simulate_colorblindness(img, colorblind_type='deuteranopia'))
+        trit_obj.found, trit_obj.simulated = True, array_to_img(
+            colorblind.simulate_colorblindness(img, colorblind_type='tritanopia'))
+        pdf_generator.generate(os.path.join(os.getcwd(), 'Simulated', f'{i}.pdf'), filename,
+                               f"{source_dir}/{filename}", [prot_obj, deut_obj, trit_obj])
+        i += 1
+
+
+# generate_graph_images('GroupingDataset')
+# generate_dataset('no_grouping_dataset.csv', 'GroupingDataset')
+simulate_colorblindness('GroupingDataset')
