@@ -13,8 +13,12 @@ from SourceCode.report_result_object import ReportResultObject
 
 
 # Following method adapted from: https://github.com/ddecatur/VizExtract/blob/main/create_graph.py
-def genData(data_type):
-    # determine variables
+def genData(data_type: str):
+    """
+    Generates data for type of chart specified in data_type
+    :param data_type: Type of chart to generate data for
+    :return: X1: series of points for coordinate 1, X2: series of points for coordinate 2
+    """
     if data_type == 'line':
         # slope and intercept
         sign = [-1, 1]
@@ -53,12 +57,16 @@ def genData(data_type):
     return X1, X2
 
 
-def generate_graph_images(target_dir):
+def generate_graph_images(target_dir: str) -> None:
+    """
+    Generates synthetic graph images
+    :param target_dir: Target directory name to save the generated images to
+    """
     os.makedirs(target_dir, exist_ok=True)
     colors = ['red', 'forestgreen', 'deepskyblue', 'yellow', 'darkorange']
     graph_types = ['scatter', 'line', 'bar']
     color_nums = [1, 2, 3]
-    for ii in range(50):
+    for ii in range(80):
         color_num = random.choice(color_nums)
         graph_type = random.choice(graph_types)
         color_choices = random.sample(colors, k=color_num)
@@ -81,7 +89,12 @@ def generate_graph_images(target_dir):
         plt.close()
 
 
-def generate_dataset(dataset_name, image_source_dir):
+def generate_dataset(dataset_name: str, image_source_dir: str) -> None:
+    """
+    Creates dataset from images in given directory
+    :param dataset_name: Target dataset name
+    :param image_source_dir: Directory of images name to create the dataset from
+    """
     dataset = pd.DataFrame(columns=['image_filename', 'graph_type', 'color_count', 'triggers'])
     for filename in os.listdir(f"{image_source_dir}/"):
         image_info = filename.split("_")
@@ -91,7 +104,11 @@ def generate_dataset(dataset_name, image_source_dir):
     dataset.to_csv(dataset_name, sep='\t', index=False)
 
 
-def simulate_colorblindness(source_dir):
+def simulate_colorblindness(source_dir: str) -> None:
+    """
+    Simulates all types of colorblindness for images in the directory and saves them in pdf report file
+    :param source_dir: Name of directory of images to simulate colorblindness for
+    """
     i = 0
     for filename in os.listdir(f"{source_dir}/"):
         graph = Image.open(f"{source_dir}/{filename}")

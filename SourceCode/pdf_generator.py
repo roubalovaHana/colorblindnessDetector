@@ -1,8 +1,15 @@
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from xhtml2pdf import pisa
+from SourceCode.report_result_object import ReportResultObject
 
 
 def html_2_pdf(html_string: str, file_name: str):
+    """
+    Converts html to pdf and saves it to a file_name file
+    :param html_string: Html data to convert
+    :param file_name: Target pdf file name
+    :return: False on success and True on errors
+    """
     # open output file for writing (truncated binary)
     result_file = open(file_name, "w+b")
 
@@ -11,16 +18,21 @@ def html_2_pdf(html_string: str, file_name: str):
         html_string,  # the HTML to convert
         dest=result_file)  # file handle to receive result
 
-    # close output file
-    result_file.close()  # close output file
+    result_file.close()
 
-    # return False on success and True on errors
     return pisa_status.err
 
 
 # https://jinja.palletsprojects.com/en/3.1.x/templates/
 # https://xhtml2pdf.readthedocs.io/en/latest/usage.html
-def generate(pdf_path, header, img_path, template_var_obj):
+def generate(pdf_path: str, header: str, img_path: str, template_var_obj: [ReportResultObject]):
+    """
+    Generates pdf report using the jinja report_template.j2 and saves it to pdf_path file
+    :param pdf_path: Target pdf file name
+    :param header: Header of the pdf file
+    :param img_path: Path of image for the pdf file
+    :param template_var_obj: Triggered warnings results of ReportResultObject type
+    """
     jinja_env = Environment(
         loader=FileSystemLoader('./'),
         autoescape=select_autoescape()
