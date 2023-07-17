@@ -1,7 +1,20 @@
+import os
+
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from xhtml2pdf import pisa
 from SourceCode.report_result_object import ReportResultObject
 
+
+def get_unique_path(file_name):
+    counter = 1
+    base_name, extension = os.path.splitext(file_name)
+    new_file_name = file_name
+
+    while os.path.exists(new_file_name):
+        new_file_name = f"{base_name}_{counter}{extension}"
+        counter += 1
+
+    return new_file_name
 
 def html_2_pdf(html_string: str, file_name: str):
     """
@@ -10,6 +23,8 @@ def html_2_pdf(html_string: str, file_name: str):
     :param file_name: Target pdf file name
     :return: False on success and True on errors
     """
+    if os.path.exists(file_name):
+        file_name = get_unique_path(file_name)
     # open output file for writing (truncated binary)
     result_file = open(file_name, "w+b")
 

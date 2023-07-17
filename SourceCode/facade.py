@@ -3,7 +3,8 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 from SourceCode import pdf_generator, detection_algs
-from SourceCode.color_grouping_algs import ColorGroupingStrategy, EuclideanDistColorGroupingStrategy
+from SourceCode.color_grouping_algs import ColorGroupingStrategy, EuclideanDistColorGroupingStrategy, \
+    KMeansColorGroupingStrategy
 
 
 class Facade:
@@ -32,9 +33,12 @@ class Facade:
         :param deut_check: Whether to check for deuteranopia issues
         :param trit_check: Whether to check for tritanopia issues
         """
-        graph = Image.open(image_file_path)
+        graph = Image.open(image_file_path).convert('RGB')
         img = np.array(graph)
-        colors = np.array(list(set(graph.convert('RGB').getdata())))
+        colors, counts = np.unique(np.array(list(graph.getdata())), axis=0,
+                                          return_counts=True)
+        indices = np.argsort(counts)[::-1]
+        colors = colors[indices]
         grouped_colors = self.strategy.group_colors(colors, 190)
         self.report_result_list = detection_algs.detect_colorblindness_issues(grouped_colors, prot_check, deut_check, trit_check, img)
 

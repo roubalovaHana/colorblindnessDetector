@@ -41,9 +41,9 @@ class Context(ABC):
         for index, row in df.iterrows():
             image_path, expected_value = self.get_img_info(row)
             expected_values.append(expected_value)
-            graph = Image.open(image_path)
+            graph = Image.open(image_path).convert('RGB')
             img = np.array(graph)
-            unique_colors, counts = np.unique(np.array(list(graph.convert('RGB').getdata())), axis=0,
+            unique_colors, counts = np.unique(np.array(list(graph.getdata())), axis=0,
                                               return_counts=True)
             unique_colors = self.preprocess_colors(unique_colors, counts)
 
@@ -211,17 +211,5 @@ def threshold_range_experiments() -> None:
         print(f'threshold: {threshold}, {len(grouped_colors)}')
 
 
-# PerformThresholdExperiments('threshold_performance_results.csv')
-# PerformKMeansPerformanceExperiments('performance_kmeans_results.csv')
-print(np.average([0.7875, 0.8041666666666667, 0.8041666666666667, 0.8166666666666667, 0.8083333333333333,
-                  0.7916666666666666, 0.7833333333333333, 0.8125, 0.7958333333333333, 0.8166666666666667]))
-print(np.average([313.4211390018463,
-321.2909457683563,
-322.4507293701172,
-323.5310044288635,
-341.1374189853668,
-349.72788429260254,
-353.9797523021698,
-354.26146936416626,
-353.6849431991577,
-352.78109407424927]))
+PerformThresholdExperiments('threshold_performance_CHECK_results.csv')
+PerformKMeansPerformanceExperiments('performance_kmeans_CHECK_results.csv')
