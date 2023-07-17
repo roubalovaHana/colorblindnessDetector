@@ -174,6 +174,7 @@ def PerformKMeansPerformanceExperiments(target_dataset_name: str) -> None:
                                     "Expected values", "Predicted values"])
 
     evaluator = KMeansEvaluator(KMeansColorGroupingStrategy())
+    accuracies, times = [], []
     print('K-means')
     for i in range(10):
         start_time = time.time()
@@ -181,7 +182,11 @@ def PerformKMeansPerformanceExperiments(target_dataset_name: str) -> None:
         end_time = time.time()
         run_time = end_time - start_time
         print(f'Accuracy: {accuracy}, Run_time: {run_time}')
+        accuracies.append(accuracy)
+        times.append(run_time)
         results.loc[i] = ['K-means', run_time, accuracy, exp_vals, pred_vals]
+    print(np.average(accuracies))
+    print(np.average(times))
     results.to_csv(target_dataset_name, sep='\t', index=False)
 
 
@@ -207,4 +212,16 @@ def threshold_range_experiments() -> None:
 
 
 # PerformThresholdExperiments('threshold_performance_results.csv')
-PerformKMeansPerformanceExperiments('performance_kmeans_results.csv')
+# PerformKMeansPerformanceExperiments('performance_kmeans_results.csv')
+print(np.average([0.7875, 0.8041666666666667, 0.8041666666666667, 0.8166666666666667, 0.8083333333333333,
+                  0.7916666666666666, 0.7833333333333333, 0.8125, 0.7958333333333333, 0.8166666666666667]))
+print(np.average([313.4211390018463,
+321.2909457683563,
+322.4507293701172,
+323.5310044288635,
+341.1374189853668,
+349.72788429260254,
+353.9797523021698,
+354.26146936416626,
+353.6849431991577,
+352.78109407424927]))
