@@ -94,10 +94,11 @@ class DesignControl(BoxLayout):
         """
         if 0 <= self.image_index < len(self.image_stack):
             path = self.image_stack[self.image_index]
-            self.logic_control.find_issues(path, self.ids.prot_check.active, self.ids.deut_check.active, self.ids.trit_check.active)
-            for label, color_deficiency in zip(self.issue_labels, self.logic_control.report_result_list):
-                if color_deficiency.found:
-                    label.opacity = 1
+            if os.path.exists(path):
+                self.logic_control.find_issues(path, self.ids.prot_check.active, self.ids.deut_check.active, self.ids.trit_check.active)
+                for label, color_deficiency in zip(self.issue_labels, self.logic_control.report_result_list):
+                    if color_deficiency.found:
+                        label.opacity = 1
         bt.text = "CHECK"
         bt.disabled = False
 

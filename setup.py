@@ -10,6 +10,7 @@ setup(
     install_requires=install_requires,
     url='',
     license='',
+    python_requires='==3.7',
     author='Hana Roubalová',
     author_email='',
     description='An application with a graphical interface that determines if a graph image is colorblind-friendly or not. '

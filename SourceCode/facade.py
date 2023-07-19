@@ -3,8 +3,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 from SourceCode import pdf_generator, detection_algs
-from SourceCode.color_grouping_algs import ColorGroupingStrategy, EuclideanDistColorGroupingStrategy, \
-    KMeansColorGroupingStrategy
+from SourceCode.color_grouping_algs import ColorGroupingStrategy, EuclideanDistColorGroupingStrategy
 
 
 class Facade:

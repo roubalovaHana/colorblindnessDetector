@@ -16,6 +16,7 @@ def get_unique_path(file_name):
 
     return new_file_name
 
+
 def html_2_pdf(html_string: str, file_name: str):
     """
     Converts html to pdf and saves it to a file_name file

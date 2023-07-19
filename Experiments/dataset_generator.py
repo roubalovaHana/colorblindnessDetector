@@ -104,14 +104,16 @@ def generate_dataset(dataset_name: str, image_source_dir: str) -> None:
     dataset.to_csv(dataset_name, sep='\t', index=False)
 
 
-def simulate_colorblindness(source_dir: str) -> None:
+def simulate_colorblindness(source_dir: str, target_dir: str) -> None:
     """
     Simulates all types of colorblindness for images in the directory and saves them in pdf report file
+    :param target_dir: Target directory name to save the simulated images to
     :param source_dir: Name of directory of images to simulate colorblindness for
     """
+    os.makedirs(target_dir, exist_ok=True)
     i = 0
     for filename in os.listdir(f"{source_dir}/"):
-        graph = Image.open(f"{source_dir}/{filename}")
+        graph = Image.open(f"{source_dir}/{filename}").convert('RGB')
         img = np.array(graph)
         prot_obj = ReportResultObject("Protanopia")
         deut_obj = ReportResultObject("Deuteranopia")
@@ -122,11 +124,11 @@ def simulate_colorblindness(source_dir: str) -> None:
             colorblind.simulate_colorblindness(img, colorblind_type='deuteranopia'))
         trit_obj.found, trit_obj.simulated = True, array_to_img(
             colorblind.simulate_colorblindness(img, colorblind_type='tritanopia'))
-        pdf_generator.generate(os.path.join(os.getcwd(), 'Simulated', f'{i}.pdf'), filename,
+        pdf_generator.generate(os.path.join(os.getcwd(), target_dir, f'{i}.pdf'), filename,
                                f"{source_dir}/{filename}", [prot_obj, deut_obj, trit_obj])
         i += 1
 
 
 # generate_graph_images('GroupingDataset')
-# generate_dataset('no_grouping_dataset.csv', 'GroupingDataset')
-simulate_colorblindness('GroupingDataset')
+# generate_dataset('grouping_dataset.csv', 'GroupingDataset')
+simulate_colorblindness('../TestFiles', 'SimulatedTestFiles')

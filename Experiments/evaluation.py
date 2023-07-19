@@ -211,5 +211,5 @@ def threshold_range_experiments() -> None:
         print(f'threshold: {threshold}, {len(grouped_colors)}')
 
 
-PerformThresholdExperiments('threshold_performance_CHECK_results.csv')
-PerformKMeansPerformanceExperiments('performance_kmeans_CHECK_results.csv')
+PerformThresholdExperiments('threshold_performance_results.csv')
+# PerformKMeansPerformanceExperiments('performance_kmeans_results.csv')
